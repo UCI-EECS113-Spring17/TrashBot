@@ -1,3 +1,14 @@
+#File: face_detect_test1.py
+#Course: EECS 113 Processor HW/SW Interface, Spring 2017
+#Team: TrashBot
+#Members:
+#     Linda Vang
+#     Claudia Gorgonio
+#     Jun Li
+#     Sandra Fong
+#Description:
+#     Test file for Webcam Face Detection
+
 from pynq import Overlay
 Overlay("base.bit").download()
 from pynq.drivers.video import Frame
