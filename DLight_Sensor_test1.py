@@ -20,7 +20,7 @@ from pynq.iop import PMODA
 from pynq.iop import PMOD_GROVE_G4
 
 
-test = DLight_Sensor(PMODA, PMOD_GROVE_G4)
-test_num = test.get()
+test = DLight_Sensor()
+test_num = test.get(PMODA, PMOD_GROVE_G4)
 
 print(test_num)
