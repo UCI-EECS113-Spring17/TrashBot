@@ -36,11 +36,11 @@ class DLight_Sensor(object):
         sensor_val = lgt.read_raw_light()
         print(sensor_val)
         #read_lux returns lux value from sensor, luminous flux per unit area
-		test_val = lgt.read_lux()
-        test_val = 0
+        test_val = lgt.read_lux()
+		
         print(test_val)
 		#this value is dependent on the normal lighting of the room
-        if(test_val < 220):	
+        if(test_val < 220):
             #close lid
             print("Sensor is covered")
             return 1
