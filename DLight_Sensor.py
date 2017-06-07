@@ -30,13 +30,13 @@ class DLight_Sensor(object):
                 raise ValueError("DLight group number can only be G3 - G4.")
         else:
             raise ValueError("No such IOP for grove device.")
-        #lgt = grove_dlight.Grove_DLight(if_id, gr_pin)
+        lgt = grove_dlight.Grove_DLight(if_id, gr_pin)
 
         #read_raw_light returns 2 integer values ch0 (visible) and ch1 (IR)
-        #sensor_val = lgt.read_raw_light()
-        #print(sensor_val)
+        sensor_val = lgt.read_raw_light()
+        print(sensor_val)
         #read_lux returns lux value from sensor, luminous flux per unit area
-        #test_val = lgt.read_lux()
+		test_val = lgt.read_lux()
         test_val = 0
         print(test_val)
         if(test_val < 260):
