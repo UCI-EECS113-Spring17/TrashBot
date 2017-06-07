@@ -39,7 +39,8 @@ class DLight_Sensor(object):
 		test_val = lgt.read_lux()
         test_val = 0
         print(test_val)
-        if(test_val < 260):
+		#this value is dependent on the normal lighting of the room
+        if(test_val < 220):	
             #close lid
             print("Sensor is covered")
             return 1
