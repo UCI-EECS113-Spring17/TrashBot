@@ -1,4 +1,4 @@
-#File: DLight_Sensor.py
+#File: DLight_Sensor_Class_test1.py
 #Course: EECS 113 Processor HW/SW Interface, Spring 2017
 #Team: TrashBot
 #Members:
