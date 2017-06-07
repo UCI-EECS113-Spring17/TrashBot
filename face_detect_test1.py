@@ -18,6 +18,7 @@ import numpy as np
 %matplotlib inline 
 from matplotlib import pyplot as plt
 import time
+from pynq.board import Button
 
 face_cascade = cv2.CascadeClassifier(
                         'haarcascade_frontalface_default.xml')
@@ -38,8 +39,11 @@ videoIn.set(cv2.CAP_PROP_FRAME_WIDTH, frame_in_w);
 videoIn.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_in_h);
 
 print("capture device is open: " + str(videoIn.isOpened()))
+i = 0
 
-for i in range(0, 4):
+while True:
+    if Button(0).read():
+        break
     f_x = 0
     f_y = 0
     fa_x = 0
@@ -55,6 +59,8 @@ for i in range(0, 4):
     avg_counter = 0
     avg_len = 0
     ret, frame_vga = videoIn.read()
+    
+    i += 1
 
 #%matplotlib inline 
 #from matplotlib import pyplot as plt
@@ -68,23 +74,21 @@ for i in range(0, 4):
     #plt.imshow(frame_vga[:,:,[2,1,0]])
     #plt.show()
 
-    #np_frame = frame_vga
+    np_frame = frame_vga
     gray = cv2.cvtColor(frame_vga, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    if len(faces) == 0:
-        print("no face is detected: ", i)
-    else:
-        print("face is detected: ", i)
-        print(faces)
+    if len(faces) != 0:
         f_x = faces[0][0]
         f_y = faces[0][1]
         f_len = faces[0][2]
-        print("fx and fy is: ", f_x, f_y)
+        #print("face is detected: ", i)
+        #print(faces)
+        #print("fx and fy is: ", f_x, f_y)
         avg_counter += 1
-        print("")
+        #print("")
     #faces is in blue
-    for (x,y,w,h) in faces:
-        cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(255,0,0),2)
+    #for (x,y,w,h) in faces:
+        #cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(255,0,0),2)
         #roi_gray = gray[y:y+h, x:x+w]
         #roi_color = frame_vga[y:y+h, x:x+w]
         #eyes = eye_cascade.detectMultiScale(roi_gray)
@@ -93,65 +97,59 @@ for i in range(0, 4):
             #cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
 
     facesalt = facealt_cascade.detectMultiScale(gray, 1.3, 5)
-    if len(facesalt) == 0:
-        print("no facealt is detected: ", i)
-    else:
-        print("facealt is detected: ", i)
-        print(facesalt)
+    if len(facesalt) != 0:
         fa_x = facesalt[0][0]
         fa_y = facesalt[0][1]
         fa_len = facesalt[0][2]
-        print("fax and fay is: ", fa_x, fa_y)
+        #print("facealt is detected: ", i)
+        #print(facesalt)
+        #print("fax and fay is: ", fa_x, fa_y)
         avg_counter += 1
-        print("")
+        #print("")
     #facesalt is in purple
-    for (x,y,w,h) in facesalt:
-        cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(128,0,128),2)
+    #for (x,y,w,h) in facesalt:
+        #cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(128,0,128),2)
         
     facesalt2 = facealt2_cascade.detectMultiScale(gray, 1.3, 5)
-    if len(facesalt2) == 0:
-        print("no facealt2 is detected: ", i)
-    else:
-        print("facealt2 is detected: ", i)
-        print(facesalt2)
+    if len(facesalt2) != 0:
+        #print("facealt2 is detected: ", i)
+        #print(facesalt2)
         fa2_x = facesalt2[0][0]
         fa2_y = facesalt2[0][1]
         fa2_len = facesalt2[0][2]
-        print("fa2x and fa2y is: ", fa2_x, fa2_y)
+        #print("fa2x and fa2y is: ", fa2_x, fa2_y)
         avg_counter += 1
-        print("")
+        #print("")
     #facesalt is in pink
-    for (x,y,w,h) in facesalt2:
-        cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(255,192,203),2)
+    #for (x,y,w,h) in facesalt2:
+        #cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(255,192,203),2)
 
     profiles = profile_cascade.detectMultiScale(gray, 1.3, 5)
-    if len(profiles) == 0:
-        print("no profile is detected: ", i)
-    else:
-        print("profile is detected: ", i)
-        print(profiles)
+    if len(profiles) != 0:
         p_x = profiles[0][0]
         p_y = profiles[0][1]
         p_len = profiles[0][2]
-        print("px and py is: ", p_x, p_y)
+        #print("profile is detected: ", i)
+        #print(profiles)
+        #print("px and py is: ", p_x, p_y)
         avg_counter += 1
-        print("")
+        #print("")
     #profiles is in red
-    for (x,y,w,h) in profiles:
-        cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(0,0,255),2)
+    #for (x,y,w,h) in profiles:
+        #cv2.rectangle(frame_vga,(x,y),(x+w,y+h),(0,0,255),2)
 
     if avg_counter != 0:
-        print("")
-        print("avg_counter is: ", avg_counter)
+        print("face detected: ," i)
+        #print("avg_counter is: ", avg_counter)
         avg_x = f_x+fa_x+fa2_x+p_x
         avg_x = avg_x/avg_counter
         #avg_y = f_y+fa_y+fa2_y+p_y
         #avg_y = avg_y/avg_counter
-        print("avg_x is: ", avg_x)
+        #print("avg_x is: ", avg_x)
     
         avg_len = f_len+fa_len+fa2_len+p_len
         avg_len = avg_len/avg_counter
-        print("avg_len is: ", avg_len)
+        #print("avg_len is: ", avg_len)
         if avg_x < 200:
             if avg_len < 150:
                 print("move left&forward")
@@ -181,14 +179,14 @@ for i in range(0, 4):
         else:
             print("don't move")
             #return 0 to indicate no movement needed
-        
     else:
         print("don't move")
         #return 0 to indicate no movement needed 
+    print("")
     
-    plt.imshow(frame_vga[:,:,[2,1,0]])
-    plt.show()
-    time.sleep(1)
+    #plt.imshow(frame_vga[:,:,[2,1,0]])
+    #plt.show()
+    #time.sleep(1)
     #k = cv2.waitKey(30) & 0xff
     #if k == 27:
      #   break
