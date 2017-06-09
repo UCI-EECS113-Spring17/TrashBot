@@ -4,6 +4,9 @@ from matplotlib import pyplot as plt
 import numpy as np
 from pynq import Overlay
 Overlay("base.bit").download()
+from MotorFunctions import MFunction
+import time
+
 
 cap = cv2.VideoCapture(0)
 obj_cascade = cv2.CascadeClassifier('haarcascade_shoe.xml')
@@ -24,7 +27,8 @@ if cap.isOpened():
 				# detection location x, y
 				loc_x = detection[0][0] + detection[0][2] / 2
 				loc_y = detection[0][1] + detection[0][3] / 2				
-							
+				forward = MFunction.goForward()
+				
 			else:
 				print('Not detect')
 
