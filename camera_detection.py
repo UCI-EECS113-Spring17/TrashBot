@@ -27,11 +27,11 @@ if cap.isOpened():
 				# detection location x, y
 				loc_x = detection[0][0] + detection[0][2] / 2
 				loc_y = detection[0][1] + detection[0][3] / 2				
-				forward = MFunction.goForward()
+				MFunction.goForward()
 				
 			else:
 				print('Not detect')
-
+				MFunction.stop()
 			#out.write(frame)
             
 print('stop')
