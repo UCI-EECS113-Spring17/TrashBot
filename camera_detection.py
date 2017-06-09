@@ -43,4 +43,4 @@ while True:
             
 print('stop')
 cap.release()
-out.release()
+#out.release()
