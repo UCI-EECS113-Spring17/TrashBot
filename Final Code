@@ -1,0 +1,85 @@
+#File: Final Code
+#Course: EECS 113 Processor HW/SW Interface, Spring 2017
+#Team: TrashBot
+#Members:
+#     Linda Vang
+#     Claudia Gorgonio
+#     Jun Li
+#     Sandra Fong
+#Description:
+# This serves to detect the color red in frame:
+#   If red is detected then it should move forward if the motor
+#   is not moving then sensor is activated and when the sensor reads less than
+#   220 then a servo is activated to open the lid.
+import cv2
+import numpy as np
+from pynq.board import Switch
+from pynq import Overlay
+import time as t
+Overlay("base.bit").download()
+#Servo Function
+from MotorFunctions import MFunction
+#Sensor Function
+from DLight_Sensor import DLight_Sensor
+from pynq.iop import PMODB
+from pynq.iop import PMOD_GROVE_G4
+
+cap = cv2.VideoCapture(0)
+#for saving video
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('output.avi',fourcc, 5, (640,480))
+
+#for red color
+# lower mask (0-10)
+lower_1 = np.array([0,100,100])
+upper_1 = np.array([10,255,255])
+
+move = False
+Sensor = DLight_Sensor()
+
+t0 = t.time()
+t1 = t.time()
+if not cap.isOpened():
+    print('Camera is not open.')
+    cap.open(0)
+else:
+    print('Start')
+    
+while cap.isOpened():
+    ret, frame = cap.read()
+    if move == False:
+        Sensor.get(PMODB,PMOD_GROVE_G4)
+        
+    t1 = t.time()
+    if t1 - t0 > 0.3:
+        move = False
+        Motor2 = MFunction(1, 1, 1)
+        Motor2.stop()
+        
+    if ret:
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, lower_1, upper_1)
+        hsv = cv2.bitwise_and(hsv, hsv, mask= mask)
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)[-2]
+
+        if len(cnts) > 0:
+            c = max(cnts, key=cv2.contourArea)
+            ((x, y), radius) = cv2.minEnclosingCircle(c)
+            M = cv2.moments(c)
+            if radius > 10:
+                cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2)
+                cv2.circle(frame, (int(x), int(y)), 5, (0, 0, 255), -1)
+                cv2.putText(frame, str(int(x)) + ", " + str(int(y)), (50, 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 255))
+                if move == False:
+                    t0 = t.time()
+                    move = True  
+                    Motor2 = MFunction(1, 1, 1)
+                    Motor2.goForward()                      
+                            
+                
+  
+        out.write(frame)
+            
+print('stop')
+#cap.release()
+out.release()
